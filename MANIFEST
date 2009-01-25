@@ -1,0 +1,15 @@
+Build.PL
+Changes
+COPYING
+lib/Scalar/Induce.pm
+lib/Scalar/Induce.xs
+Makefile.PL
+MANIFEST
+META.yml
+README
+t/00-load.t
+t/10-pure_perl.t
+t/10-xs.t
+t/boilerplate.t
+t/pod-coverage.t
+t/pod.t
