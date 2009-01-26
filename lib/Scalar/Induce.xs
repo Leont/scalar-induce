@@ -7,7 +7,9 @@
 //#define USE_MULTICALL
 //#endif
 
-MODULE = Scalar::Induce				PACKAGE = Scalar::Induce
+static int run = 0;
+
+MODULE = Scalar::Induce								PACKAGE = Scalar::Induce
 
 PROTOTYPES: DISABLED
 
@@ -18,20 +20,28 @@ induce(block, var)
 	PROTOTYPE: &$
 	PPCODE:
 #ifdef USE_MULTICALL
+		SV **args_base = &PL_stack_base[ax - 1];
+		AV* ret = newAV();
+		I32 gimme = G_ARRAY;
+		++run;
+		PUTBACK;
 		SAVESPTR(DEFSV);
 		DEFSV = sv_mortalcopy(var);
 		dMULTICALL;
-		I32 gimme = G_ARRAY;
 		PUSH_MULTICALL(block);
-		FREETMPS; LEAVE;
 		while (SvOK(DEFSV)) {
-			PUSHMARK(SP);
+			int j;
 			MULTICALL;
 			SPAGAIN;
-			PUTBACK;
+			for(j = cx->blk_oldsp; j < sp - args_base; ++j) {
+				if (!SvPADSTALE(ST(j)))
+					ST(j) = sv_mortalcopy(ST(j));
+				av_push(ret, SvREFCNT_inc(ST(j)));
+			}
+			cx->blk_oldsp = sp - args_base;
 		}
-		ENTER; SAVETMPS;
 		POP_MULTICALL;
+		SAVEMORTALIZESV(ret);
 #else
 		SAVESPTR(DEFSV);
 		DEFSV = sv_mortalcopy(var);
@@ -45,9 +55,4 @@ induce(block, var)
 void
 void(...)
 	CODE:
-
-BOOT:
-{
-	sv_setiv(get_sv("Scalar::Induce::uses_xs", TRUE | GV_ADDMULTI ), 1);
-}
 

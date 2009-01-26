@@ -16,11 +16,12 @@ my $builder = Module::Build->new(
 	build_requires      => {
 		'Module::Build'      => 0.25,
 		'Test::More'         => 0,
+		'Test::Differences'  => 0,
 	},
 	recommends          => {
 		'ExtUtils::CBuilder' => 0.15,
 	},
-	config_data              => {
+	config_data         => {
 		C_support            => $C_support,
 	},
 	meta_merge => {

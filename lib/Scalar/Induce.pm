@@ -6,13 +6,14 @@ use warnings;
 
 use base qw/Exporter DynaLoader/;
 our $VERSION = '0.01';
-our @EXPORT = qw/induce void/;
+our @EXPORT  = qw/induce void/;
 
 use Scalar::Induce::ConfigData;
 
-bootstrap Scalar::Induce $VERSION if Scalar::Induce::ConfigData->config('C_support') and not our $pure_perl;
-
-if (not defined &induce) {
+if (Scalar::Induce::ConfigData->config('C_support') and not our $pure_perl) {
+	bootstrap Scalar::Induce $VERSION;
+}
+else {
 	Test::More::diag('Using pure perl version');
 	eval <<'END';
 	sub induce (&$) {
@@ -22,7 +23,6 @@ if (not defined &induce) {
 		@r;
 	}
     sub void {}
-	our $uses_xs = 0;
 END
 }
 
@@ -32,7 +32,7 @@ __END__
 
 =head1 NAME
 
-Scalar::Induce - The great new Scalar::Induce!
+Scalar::Induce - Unfolding scalars
 
 =head1 VERSION
 
@@ -40,17 +40,21 @@ Version 0.01
 
 =head1 SYNOPSIS
 
-Quick summary of what the module does.
+	my @reversed = induce { @$_ ? pop @$_ : void undef $_ } [ 1 .. 10 ];
 
-Perhaps a little code snippet.
+	my @chunks = induce { (length) ? substr $_, 0, 3, '' : void undef $_ } "foobarbaz";
 
-	#TODO...
-	
 =head1 FUNCTIONS
+
+All functions are exported by default.
 
 =head2 induce
 
+This function takes a block and a scalar as arguments and then repeatedly applies the block to the value, accumulating the return values to eventually return them as a list. It does the opposite of reduce, hence its name. It's called unfold in some other languages.
+
 =head2 void
+
+This is a utility function that always returns an empty list (or undefined in scalar context). This makes a lot of inductions simpler.
 
 =head1 AUTHORS
 
@@ -68,7 +72,6 @@ automatically be notified of progress on your bug as I make changes.
 You can find documentation for this module with the perldoc command.
 
     perldoc Scalar::Induce
-
 
 You can also look for information at:
 
@@ -94,8 +97,7 @@ L<http://search.cpan.org/dist/Scalar-Induce>
 
 
 =head1 ACKNOWLEDGEMENTS
-Aristotle Pagaltzis came up with this idea L<http://use.perl.org/~Aristotle/journal/37831 here>. Leon Timmermans merely re-implemented it in XS and uploaded it to CPAN.
-
+Aristotle Pagaltzis came up with this idea (L<http://use.perl.org/~Aristotle/journal/37831>). Leon Timmermans merely re-implemented it in XS and uploaded it to CPAN.
 
 =head1 COPYRIGHT & LICENSE
 
