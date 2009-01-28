@@ -1,6 +1,6 @@
 Scalar-Induce
 
-This module provides a 
+This module provides induce, a function to unfold scalars into lists. It does the opposite of reduce (availible in List::Util).
 
 INSTALLATION
 

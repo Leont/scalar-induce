@@ -1,4 +1,7 @@
 Revision history for Scalar-Induce
 
-0.01    2009-01-xx
+0.02    2009-01-27
+        Hopefull fixed pure-perl version for perl 5.6.
+
+0.01    2009-01-26
         First version, released on an unsuspecting world.

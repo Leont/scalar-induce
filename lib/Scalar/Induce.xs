@@ -7,8 +7,6 @@
 //#define USE_MULTICALL
 //#endif
 
-static int run = 0;
-
 MODULE = Scalar::Induce								PACKAGE = Scalar::Induce
 
 PROTOTYPES: DISABLED
@@ -23,7 +21,6 @@ induce(block, var)
 		SV **args_base = &PL_stack_base[ax - 1];
 		AV* ret = newAV();
 		I32 gimme = G_ARRAY;
-		++run;
 		PUTBACK;
 		SAVESPTR(DEFSV);
 		DEFSV = sv_mortalcopy(var);
@@ -47,7 +44,7 @@ induce(block, var)
 		DEFSV = sv_mortalcopy(var);
 		while (SvOK(DEFSV)) {
 			PUSHMARK(SP);
-			call_sv((SV*)block, G_ARRAY);
+			call_sv((SV*)block, G_ARRAY | G_NOARGS);
 			SPAGAIN;
 		}
 #endif

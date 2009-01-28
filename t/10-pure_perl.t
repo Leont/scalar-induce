@@ -11,7 +11,7 @@ ok(!defined(void(1)), "void(1) is void");
 ok(!defined(void(1, 2, 3)), "void(1, 2, 3) is void");
 
 is(() = void(), 0, "void is empty");
-is(() = void(1), 0, "void is empty");
+is(() = void(1), 0, "void(1) is empty");
 
 my @reversed = induce { @$_ ? pop @$_ : undef $_ } [ 1 .. 10 ];
 my @expected = (reverse(1..10), undef);
