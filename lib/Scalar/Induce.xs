@@ -3,10 +3,6 @@
 #include <perl.h>
 #include <XSUB.h>
 
-//#ifdef MULTICALL 
-//#define USE_MULTICALL
-//#endif
-
 MODULE = Scalar::Induce								PACKAGE = Scalar::Induce
 
 PROTOTYPES: DISABLED
@@ -17,29 +13,6 @@ induce(block, var)
 	SV* var;
 	PROTOTYPE: &$
 	PPCODE:
-#ifdef USE_MULTICALL
-		SV **args_base = &PL_stack_base[ax - 1];
-		AV* ret = newAV();
-		I32 gimme = G_ARRAY;
-		PUTBACK;
-		SAVESPTR(DEFSV);
-		DEFSV = sv_mortalcopy(var);
-		dMULTICALL;
-		PUSH_MULTICALL(block);
-		while (SvOK(DEFSV)) {
-			int j;
-			MULTICALL;
-			SPAGAIN;
-			for(j = cx->blk_oldsp; j < sp - args_base; ++j) {
-				if (!SvPADSTALE(ST(j)))
-					ST(j) = sv_mortalcopy(ST(j));
-				av_push(ret, SvREFCNT_inc(ST(j)));
-			}
-			cx->blk_oldsp = sp - args_base;
-		}
-		POP_MULTICALL;
-		SAVEMORTALIZESV(ret);
-#else
 		SAVESPTR(DEFSV);
 		DEFSV = sv_mortalcopy(var);
 		while (SvOK(DEFSV)) {
@@ -47,7 +20,6 @@ induce(block, var)
 			call_sv((SV*)block, G_ARRAY | G_NOARGS);
 			SPAGAIN;
 		}
-#endif
 
 void
 void(...)
