@@ -1,6 +1,8 @@
 Revision history for Scalar-Induce
 
 {{$NEXT}}
+
+0.03      2011-12-11 17:38:50 Europe/Amsterdam
           Removed pure-perl support
           Modernize XS loading and exporting a bit
           Remove multicall
