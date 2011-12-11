@@ -4,24 +4,26 @@ use 5.006;
 use strict;
 use warnings;
 
-use base qw/Exporter DynaLoader/;
-our $VERSION = '0.02';
+##no critic (ProhibitAutomaticExportation)
+use Exporter 5.57 'import';
+use XSLoader;
+our $VERSION = '0.03';
 our @EXPORT  = qw/induce void/;
 
 use Scalar::Induce::ConfigData;
 
 if (Scalar::Induce::ConfigData->config('C_support') and not our $pure_perl) {
-	bootstrap Scalar::Induce $VERSION;
+	eval { XSLoader::load('Scalar::Induce', $VERSION) } or warn "$@\nFalling back on pure-perl version\n";
 }
-else {
-	eval <<'END';
+if (not defined &induce) {
+	eval <<'END';    ##no critic (ProhibitStringyEval)
 	sub induce (&$) {
 		my ( $c, $v ) = @_;
 		my @r;
 		for ( $v ) { push @r, $c->() while defined }
 		@r;
 	}
-    sub void { return; }
+	sub void { return; }
 END
 }
 
@@ -35,7 +37,7 @@ Scalar::Induce - Unfolding scalars
 
 =head1 VERSION
 
-Version 0.02
+Version 0.03
 
 =head1 SYNOPSIS
 
