@@ -10,22 +10,7 @@ use XSLoader;
 our $VERSION = '0.03';
 our @EXPORT  = qw/induce void/;
 
-use Scalar::Induce::ConfigData;
-
-if (Scalar::Induce::ConfigData->config('C_support') and not our $pure_perl) {
-	eval { XSLoader::load('Scalar::Induce', $VERSION) } or warn "$@\nFalling back on pure-perl version\n";
-}
-if (not defined &induce) {
-	eval <<'END';    ##no critic (ProhibitStringyEval)
-	sub induce (&$) {
-		my ( $c, $v ) = @_;
-		my @r;
-		for ( $v ) { push @r, $c->() while defined }
-		@r;
-	}
-	sub void { return; }
-END
-}
+XSLoader::load('Scalar::Induce', $VERSION);
 
 1;
 

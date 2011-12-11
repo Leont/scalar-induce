@@ -8,7 +8,6 @@ MANIFEST
 META.yml
 README
 t/00-load.t
-t/10-pure_perl.t
-t/10-xs.t
+t/10-basics.t
 t/pod-coverage.t
 t/pod.t

@@ -1,10 +1,8 @@
 #!perl -T
 
-use Test::More;
+use Test::More tests => 10;
 use Test::Differences;
 use Scalar::Induce;
-
-plan(Scalar::Induce::ConfigData->config('C_support') ? (tests => 10) : (skip_all => "No XS support") );
 
 ok(!defined(void()), "void() is void");
 ok(!defined(void(1)), "void(1) is void");
