@@ -1,5 +1,6 @@
 Revision history for Scalar-Induce
 
+{{$NEXT}}
           Removed pure-perl support
           Modernize XS loading and exporting a bit
           Remove multicall
