@@ -1,6 +1,7 @@
 Revision history for Scalar-Induce
 
 {{$NEXT}}
+          Restored pure-perl support
 
 0.03      2011-12-11 17:38:50 Europe/Amsterdam
           Removed pure-perl support

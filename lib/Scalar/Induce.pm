@@ -8,8 +8,19 @@ use warnings;
 use Exporter 5.57 'import';
 use XSLoader;
 our @EXPORT  = qw/induce void/;
-
-XSLoader::load('Scalar::Induce', __PACKAGE__->VERSION);
+if (!(not our $pure_perl and eval { XSLoader::load('Scalar::Induce', __PACKAGE__->VERSION); 1 })) {
+	require Carp;
+	eval <<'END' or Carp::croak("Could not load pure-perl induce: $@");    ##no critic (ProhibitStringyEval)
+	sub induce (&$) {
+		my ( $c, $v ) = @_;
+		my @r;
+		for ( $v ) { push @r, $c->() while defined }
+		@r;
+	}
+	sub void { return; }
+	1;
+END
+}
 
 1;
 

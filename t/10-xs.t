@@ -1,8 +1,17 @@
 #!perl -T
 
-use Test::More tests => 10;
+use strict;
+use warnings FATAL => 'all';
+
+use Test::More;
 use Test::Differences;
 use Scalar::Induce;
+
+use B 'svref_2object';
+
+my $induce_obj = svref_2object(\&induce);
+
+plan($induce_obj->XSUB ? (tests => 10) : (skip_all => "No XS support") );
 
 ok(!defined(void()), "void() is void");
 ok(!defined(void(1)), "void(1) is void");
